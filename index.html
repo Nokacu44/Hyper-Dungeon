@@ -11,12 +11,12 @@
         {name: 'rodorg', type: 'orc', pos: {x:2, y:3}}
       ]
 
-
       on load set global TILE_MAP to the children of #gameWorld
       on load set global TILE_TYPES to [
         {glyph: '#', class: 'wall'},
         {glyph: '_', class: 'grass'}
       ] 
+      
       on load set global MONSTER_TYPES to {
         'orc': {glyph: 'O', style: 'orc'}
       }
@@ -54,7 +54,7 @@
       set local directions to [{x:-1, y:0}, {x:1, y:0}, {x:0, y:-1}, {x:0, y:1}]
       for dir in directions 
         if PLAYER_POSITION.x + dir.x == tile's @pos_x and PLAYER_POSITION.y + dir.y  == tile's @pos_y then
-          log "ATTACCATO DA UN ", enemy's type, " di nome ", enemy's name
+          log "ATTACKED BY ", enemy's type, " called ", enemy's name
         end
       end
     end
@@ -86,9 +86,6 @@
                 remove .actor then get first <div/> in me then set it.innerHTML to @glyph
               end
               
-              if @glyph == 'O' then
-              end
-
               for enemy in CURRENT_ENEMIES
                 if enemy.pos.x == @pos_x and enemy.pos.y == @pos_y then
                   add .{enemy.type} 
