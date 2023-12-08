@@ -1,0 +1,5 @@
+def printHello 
+    log 'Hello World!'
+end
+
+on load call printHello

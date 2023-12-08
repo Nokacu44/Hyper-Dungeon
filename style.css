@@ -1,0 +1,84 @@
+:root {
+  --map-cell-width: 20;
+  --map-cell-height: 15;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+#gameArea {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+#gameWorld {
+  background-color: #202020;
+
+  width: 100%;
+  height: 84%;
+
+  display: grid;
+  grid-auto-rows: calc(100% / var(--map-cell-height));
+  grid-template-columns: repeat(auto-fill, calc(100% / var(--map-cell-width)));
+
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.tile {
+  background-color: black;
+  grid-template-rows: calc(100% / 16);
+  grid-template-columns: calc(100% / 16);
+  align-items: center;
+}
+.tile div {
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2.3vw; 
+  font-family: "rogue";
+  text-align: center;
+  text-rendering: optimizeSpeed;
+  text-justify: distribute;
+  text-decoration: solid;
+}
+
+.grass {
+  color: rgb(16, 173, 16);
+}
+
+.wall {
+  color: #6E260E;
+}
+.actor {
+  color: #CCCC;
+}
+
+.orc {
+  color: rgb(2, 40, 2);
+}
+
+#gameHUD {
+  position: absolute;
+  width: 100%;
+  height: 16%;
+  bottom: 0;
+  border-style: dotted;
+  border-color: #808088;
+  background-color: black;
+}
+
+
+@font-face {
+  font-family: 'rogue'; /*a name to be used later*/
+  src: url('assets\\Retro Gaming.ttf'); /*URL to font*/
+}

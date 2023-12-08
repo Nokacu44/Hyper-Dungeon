@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <title>HyperDungeon</title>
+  </head>
+  <body
+    script="  
+      on load set global PLAYER_POSITION to {x: 0, y: 0}
+      on load set global CURRENT_ENEMIES to [
+        {name: 'rodorg', type: 'orc', pos: {x:2, y:3}}
+      ]
+
+
+      on load set global TILE_MAP to the children of #gameWorld
+      on load set global TILE_TYPES to [
+        {glyph: '#', class: 'wall'},
+        {glyph: '_', class: 'grass'}
+      ] 
+      on load set global MONSTER_TYPES to {
+        'orc': {glyph: 'O', style: 'orc'}
+      }
+      on keyup(key) call handleInput(key)
+      "
+  >
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+
+    <div id="gameArea" style="width: 320px; height: 240px">
+      <div id="gameWorld"></div>
+      <div id="gameHUD"></div>
+    </div>
+  </body>
+
+  <script type="text/hyperscript">
+    def handleInput(key)
+      set local key to key.toLowerCase()
+
+      if key == 'd' then
+        increment PLAYER_POSITION.x
+      else if key == 'a' then
+        decrement PLAYER_POSITION.x
+      else if key == 's' then
+        increment PLAYER_POSITION.y
+      else if key == 'w' then
+        decrement PLAYER_POSITION.y
+      end
+
+      repeat for tile in TILE_MAP
+        trigger update on it
+      end
+    end
+
+    def EnemyAI(tile, enemy)
+      set local directions to [{x:-1, y:0}, {x:1, y:0}, {x:0, y:-1}, {x:0, y:1}]
+      for dir in directions 
+        if PLAYER_POSITION.x + dir.x == tile's @pos_x and PLAYER_POSITION.y + dir.y  == tile's @pos_y then
+          log "ATTACCATO DA UN ", enemy's type, " di nome ", enemy's name
+        end
+      end
+    end
+
+
+  </script>
+
+  <script>
+    tilemap = document.getElementById("gameWorld");
+    for (let y = 0; y < 15; y++) {
+      for (let x = 0; x < 20; x++) {
+        const tile = document.createElement("div");
+        const text = document.createElement("div");
+        tile.appendChild(text);
+        tile.setAttribute(
+          "_",
+          ` 
+          on load 
+          on load add .tile to me 
+                  then set @pos_x to "${x}" set @pos_y to "${y}" 
+                      then set tile_type to random in TILE_TYPES 
+                        then set @glyph to tile_type.glyph
+                          then add .{tile_type.class}
+                            then trigger update on me 
+          on update 
+              if PLAYER_POSITION.x == @pos_x and PLAYER_POSITION.y == @pos_y then
+                add .actor then get first <div/> in me then set it.innerHTML to "@"
+              else
+                remove .actor then get first <div/> in me then set it.innerHTML to @glyph
+              end
+              
+              if @glyph == 'O' then
+              end
+
+              for enemy in CURRENT_ENEMIES
+                if enemy.pos.x == @pos_x and enemy.pos.y == @pos_y then
+                  add .{enemy.type} 
+                    then set @glyph to MONSTER_TYPES[enemy.type].glyph
+                      then get first <div/> in me 
+                        then set it.innerHTML to @glyph
+                  EnemyAI(me, enemy)
+                end
+              end
+              
+
+          on click log "position: ", @pos_x, @pos_y
+        `
+        );
+        tilemap.appendChild(tile);
+      }
+    }
+  </script>
+
+  <script>
+    function resizeGame() {
+      var gameArea = document.getElementById("gameArea");
+
+      var widthToHeight = 4 / 3;
+      var newWidth = window.innerWidth;
+      var newHeight = window.innerHeight;
+      var newWidthToHeight = newWidth / newHeight;
+
+      if (newWidthToHeight > widthToHeight) {
+        newWidth = newHeight * widthToHeight;
+        gameArea.style.height = newHeight + "px";
+        gameArea.style.width = newWidth + "px";
+      } else {
+        newHeight = newWidth / widthToHeight;
+        gameArea.style.width = newWidth + "px";
+        gameArea.style.height = newHeight + "px";
+      }
+
+      gameArea.style.marginTop = -newHeight / 2 + "px";
+      gameArea.style.marginLeft = -newWidth / 2 + "px";
+
+      var gameCanvas = document.getElementById("gameWorld");
+      gameCanvas.width = newWidth;
+      gameCanvas.height = newHeight;
+    }
+    window.addEventListener("load", resizeGame, false);
+    window.addEventListener("resize", resizeGame, false);
+    window.addEventListener("orientationchange", resizeGame, false);
+  </script>
+</html>
